@@ -7,8 +7,6 @@ Created on Fri Oct 26 18:29:38 2018
 """
 from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from pdfminer.converter import TextConverter
-from pdfminer.pdfdocument import PDFDocument
-from pdfminer.pdfparser import PDFParser
 from pdfminer.layout import LAParams
 from pdfminer.pdfpage import PDFPage
 from pdfminer.layout import LTTextBox, LTTextLine, LTImage,  LTFigure
@@ -16,11 +14,10 @@ from pdfminer.converter import PDFPageAggregator
 
 from PIL import Image
 from io import StringIO
-from io import BytesIO
 from glob import glob
 import re
 
-file_list = glob('./pdf/*.pdf') # PDFファイル取り込み
+file_list = glob('./pdf/*.pdf')
 
 def convert_pdf_to_txt(path):
     rsrcmgr = PDFResourceManager()
@@ -86,7 +83,7 @@ if __name__ == '__main__':
             splitted=REfilteringwords(splitted,filterpattern)
             
     
-    allText = ','.join(result_list) # PDFごとのテキストが配列に格納されているので連結する
+    allText = ','.join(result_list)
     allText=allText.strip()
-    file = open('allpdf.txt', 'w')  #書き込みモードでオープン
+    file = open('allpdf.txt', 'w')
     file.write(allText)
