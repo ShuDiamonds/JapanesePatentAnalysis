@@ -38,7 +38,7 @@ if __name__ == '__main__':
     colnames=sorted(vectorizer.vocabulary_.items(), key=lambda x:x[1])
     print(vecs.toarray())
     
-    K = 10 #top k 
+    K = 15 #top k 
     for i in np.arange(temp.shape[0]):
         my_array=temp[:][i]
         # ソートはされていない上位k件のインデックス
