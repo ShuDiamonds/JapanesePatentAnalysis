@@ -16,8 +16,8 @@ from PIL import Image
 from io import StringIO
 from glob import glob
 import re
+import os
 
-file_list = glob('./pdf/*.pdf')
 
 def convert_pdf_to_txt(path):
     rsrcmgr = PDFResourceManager()
@@ -46,20 +46,39 @@ def filteringwords(listdata,word):
     return [x for x in listdata if x!=word]
 def REfilteringwords(listdata,pattern):
     return [x for x in listdata if None == re.match(pattern,x)]
+def Findwords(listdata,patterns):
+    results=[]
+    for pattern in patterns:
+         results.extend([x for x in listdata if None != re.match(pattern,x)])
+    return results
+def Findwords2index(listdata,pattern):
+    temp= [i for i,x in enumerate(listdata) if None != re.match(pattern,x)]
+    if len(temp)==0:
+        return 0
+    else:   
+        return  temp[0]
+def not_exist_mkdir( output_path ):
+    if( not os.path.exists(output_path) ):
+        os.mkdir( output_path )
     
-
+outputpath = "./output/"
 if __name__ == '__main__':
     result_list = []
-    for item in file_list:
+    file_list = glob('./pdf/*.pdf')
+    filenames=os.listdir('./pdf/')
+    #check the output folder
+    not_exist_mkdir(outputpath)
+    for item,filename in zip(file_list,filenames):
+        #check the output folder
+        pdfoutputpath=outputpath+filename.rstrip(".pdf")
+        not_exist_mkdir(pdfoutputpath)
+        #pdf convert
         result_txt = convert_pdf_to_txt(item)
-        result_list.append(result_txt)
-    
-    
-    #Cleaning the document
-    result_list2=[]
-    for txtdocment in result_list:
+        result_list.append(result_txt)  
+        
+        #Cleaning the document
         #devide to sentence
-        splitted=txtdocment.split("\n")
+        splitted=result_txt.split("\n")
         #strip the items
         splitted=[x.strip() for x in splitted]
         #filtering those words
@@ -81,7 +100,28 @@ if __name__ == '__main__':
         filterpattern=[u"【図.*】",u"【選択図】"]
         for filterpattern in filterpattern:
             splitted=REfilteringwords(splitted,filterpattern)
-            
+        with open(pdfoutputpath+"/cleanedtext.txt", mode='w') as f:
+            f.write("\n".join(splitted))
+        
+        #find the purpose section
+        #Extract "【要約】","【課題】","【解決手段】"
+        temp=Findwords(splitted,["【要約】","【課題】","【解決手段】"])
+        with open(pdfoutputpath+"/【要約】.txt", mode='w') as f:
+            f.write("\n".join(temp))
+        
+        #Extract 【先行技術文献】の特許
+        tempindex=Findwords2index(splitted,"【先行技術文献】")
+        temp=splitted[tempindex+2:] #skip 2rows
+        Findedflag=0 #When it is found, this flag turns 1
+        tagetresult=[]
+        for sentence in temp:
+            if None != re.match("【特許文献\d+】",sentence): #check
+                Findedflag=1
+                tagetresult.append(sentence)
+            elif Findedflag==1 and None == re.match("【特許文献\d+】",sentence):
+                break
+        with open(pdfoutputpath+"/【先行技術文献】.txt", mode='w') as f:
+            f.write("\n".join(tagetresult))
     
     allText = ','.join(result_list)
     allText=allText.strip()
