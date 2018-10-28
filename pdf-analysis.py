@@ -17,6 +17,9 @@ from io import StringIO
 from glob import glob
 import re
 import os
+import datetime
+import time
+
 
 
 def convert_pdf_to_txt(path):
@@ -63,6 +66,10 @@ def not_exist_mkdir( output_path ):
     
 outputpath = "./output/"
 if __name__ == '__main__':
+    progress_s_time = datetime.datetime.today()
+    print('実行開始時間(Start time)：' + str( progress_s_time.strftime("%Y/%m/%d %H:%M:%S") ))
+    progress_s_time = time.time()
+    
     result_list = []
     file_list = glob('./pdf/*.pdf')
     filenames=os.listdir('./pdf/')
@@ -74,7 +81,7 @@ if __name__ == '__main__':
         not_exist_mkdir(pdfoutputpath)
         #pdf convert
         result_txt = convert_pdf_to_txt(item)
-        result_list.append(result_txt)  
+        
         
         #Cleaning the document
         #devide to sentence
@@ -103,6 +110,9 @@ if __name__ == '__main__':
         with open(pdfoutputpath+"/cleanedtext.txt", mode='w') as f:
             f.write("\n".join(splitted))
         
+        
+        result_list.append(",".join(splitted))  
+        
         #find the purpose section
         #Extract "【要約】","【課題】","【解決手段】"
         temp=Findwords(splitted,["【要約】","【課題】","【解決手段】"])
@@ -123,7 +133,10 @@ if __name__ == '__main__':
         with open(pdfoutputpath+"/【先行技術文献】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
     
-    allText = ','.join(result_list)
+    allText = '\n'.join(result_list)
     allText=allText.strip()
-    file = open('allpdf.txt', 'w')
-    file.write(allText)
+    with open("allpdf.txt", mode='w') as f:
+            f.write(allText)
+    progress_e_time = time.time()
+    progress_i_time = progress_e_time - progress_s_time
+    print( '実行時間(Duration)：' + str(round(progress_i_time,1)) + "秒" )
