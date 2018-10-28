@@ -17,8 +17,7 @@ if __name__ == '__main__':
     progress_s_time = time.time()
     
     #setup mecab
-    m = MeCab.Tagger ("-Owakati")
-    #print(m.parse ("すもももももももものうち"))
+    m = MeCab.Tagger ("-Owakati -u ./userdic/patentdic.dic")
     result_list=[]
     with open("allpdf.txt", mode='r') as f:
         line = f.readline() # 1行を文字列として読み込む(改行文字も含まれる)
