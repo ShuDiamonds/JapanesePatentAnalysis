@@ -71,6 +71,11 @@ if __name__ == '__main__':
     progress_s_time = time.time()
     
     result_list = []
+    PreviousLiteratures=[]
+    TechField_list=[]
+    BackgroundTech_list=[]
+    ProblemSolve_list=[]
+    
     file_list = glob('./pdf/*.pdf')
     filenames=os.listdir('./pdf/')
     #check the output folder
@@ -83,7 +88,7 @@ if __name__ == '__main__':
         result_txt = convert_pdf_to_txt(item)
         
         
-        #Cleaning the document
+        ############## Cleaning the document
         #devide to sentence
         splitted=result_txt.split("\n")
         #strip the items
@@ -102,7 +107,7 @@ if __name__ == '__main__':
         splitted=["【"+x for x in splitted]
         #Refined well!!!
         
-        #Extra cleaning start from here
+        ############## Extract cleaning start from here
         #Refine "【図.】"
         filterpattern=[u"【図.*】",u"【選択図】"]
         for filterpattern in filterpattern:
@@ -113,13 +118,63 @@ if __name__ == '__main__':
         
         result_list.append(",".join(splitted))  
         
+        
         #find the purpose section
-        #Extract "【要約】","【課題】","【解決手段】"
+        ################## Extract "【要約】","【課題】","【解決手段】"
         temp=Findwords(splitted,["【要約】","【課題】","【解決手段】"])
         with open(pdfoutputpath+"/【要約】.txt", mode='w') as f:
             f.write("\n".join(temp))
         
-        #Extract 【先行技術文献】の特許
+        ################## Extract 【技術分野】
+        tempindex=Findwords2index(splitted,"【技術分野】")
+        temp=splitted[tempindex:] #skip 2rows
+        Findedflag=0 #When it is found, this flag turns 1
+        tagetresult=[]
+        for sentence in temp:
+            if None != re.match("【\d+】",sentence): #check
+                Findedflag=1
+                tagetresult.append(sentence)
+            elif Findedflag==1 and None == re.match("【\d+】",sentence):
+                break
+        with open(pdfoutputpath+"/【技術分野】.txt", mode='w') as f:
+            f.write("\n".join(tagetresult))
+        TechField_list.append("\n".join([filename]+tagetresult))
+        
+        ################## Extract 【背景技術】
+        tempindex=Findwords2index(splitted,"【背景技術】")
+        temp=splitted[tempindex:] #skip 2rows
+        Findedflag=0 #When it is found, this flag turns 1
+        tagetresult=[]
+        for sentence in temp:
+            if None != re.match("【\d+】",sentence): #check
+                Findedflag=1
+                tagetresult.append(sentence)
+            elif Findedflag==1 and None == re.match("【\d+】",sentence):
+                break
+        with open(pdfoutputpath+"/【背景技術】.txt", mode='w') as f:
+            f.write("\n".join(tagetresult))
+        BackgroundTech_list.append("\n".join([filename]+tagetresult))
+        
+        
+        ################## Extract 【発明が解決しようとする課題】
+        tempindex=Findwords2index(splitted,"【発明が解決しようとする課題】")
+        temp=splitted[tempindex:] #skip 2rows
+        Findedflag=0 #When it is found, this flag turns 1
+        tagetresult=[]
+        for sentence in temp:
+            if None != re.match("【\d+】",sentence): #check
+                Findedflag=1
+                tagetresult.append(sentence)
+            elif Findedflag==1 and None == re.match("【\d+】",sentence):
+                break
+        with open(pdfoutputpath+"/【発明が解決しようとする課題】.txt", mode='w') as f:
+            f.write("\n".join(tagetresult))
+        ProblemSolve_list.append("\n".join([filename]+tagetresult))
+        
+        
+        
+        
+        ################## Extract 【先行技術文献】の特許
         tempindex=Findwords2index(splitted,"【先行技術文献】")
         temp=splitted[tempindex+2:] #skip 2rows
         Findedflag=0 #When it is found, this flag turns 1
@@ -132,8 +187,37 @@ if __name__ == '__main__':
                 break
         with open(pdfoutputpath+"/【先行技術文献】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
+        PreviousLiteratures.append("\n".join([filename]+tagetresult))
+        
+        
+        
+        
+    # write all 【技術分野】 text data
+    allText = ',\n\n\n'.join(TechField_list)
+    allText=allText.strip()
+    with open("all【技術分野】.txt", mode='w') as f:
+            f.write(allText)
     
-    allText = '\n'.join(result_list)
+    # write all 【背景技術】 text data
+    allText = ',\n\n\n'.join(BackgroundTech_list)
+    allText=allText.strip()
+    with open("all【背景技術】.txt", mode='w') as f:
+            f.write(allText)
+    
+    # write all 【発明が解決しようとする課題】 text data
+    allText = ',\n\n\n'.join(ProblemSolve_list)
+    allText=allText.strip()
+    with open("all【発明が解決しようとする課題】.txt", mode='w') as f:
+            f.write(allText)
+    
+    # write all 【先行技術文献】 text data
+    allText = ',\n\n\n'.join(PreviousLiteratures)
+    allText=allText.strip()
+    with open("all【先行技術文献】.txt", mode='w') as f:
+            f.write(allText)
+            
+    # write all pdf text data
+    allText = ',\n\n\n'.join(result_list)
     allText=allText.strip()
     with open("allpdf.txt", mode='w') as f:
             f.write(allText)

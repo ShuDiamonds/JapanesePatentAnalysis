@@ -19,16 +19,18 @@ if __name__ == '__main__':
     #setup mecab
     m = MeCab.Tagger ("-Owakati -u ./userdic/patentdic.dic")
     result_list=[]
-    with open("allpdf.txt", mode='r') as f:
-        line = f.readline() # 1行を文字列として読み込む(改行文字も含まれる)
-        while line:
-            line = f.readline()
+    with open("all【発明が解決しようとする課題】.txt", mode='r') as f:
+        lines = f.readlines() # 1行を文字列として読み込む(改行文字も含まれる)
+        temp="".join(lines)
+        lines=temp.split(",\n\n\n")
+        
+        for line in lines:
             convertedtext=m.parse (line)
             result_list.append(convertedtext)
         #end while
     
     #saving
-    allText = '\n'.join(result_list)
+    allText = ',\n'.join(result_list)
     with open("wakatigaki_allpdf.txt", mode='w') as f:
         f.write(allText)
     

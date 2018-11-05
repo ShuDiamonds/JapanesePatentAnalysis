@@ -22,9 +22,11 @@ if __name__ == '__main__':
     progress_s_time = time.time()
     
     with open("wakatigaki_allpdf.txt", mode='r') as f:
-        lines = f.readlines()
-        lines=lines[::2]
-    
+        lines = f.readlines()    
+    #add
+    temp="".join(lines)
+    lines=temp.split(",\n")
+    #end add
     docs = np.array(lines)
     #np.set_printoptions(precision=2)##有効桁2桁で丸める
     
