@@ -19,6 +19,7 @@ def selectFIClass(x):
     resultlist=[]
     for x in tmp:
         resultlist.append(x[0:4])
+    resultlist=list(set(resultlist))
     return "\n".join(resultlist)
 def selectFISubclass(x):
     #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
@@ -26,7 +27,7 @@ def selectFISubclass(x):
     resultlist=[]
     for x in tmp:
         resultlist.append(x[0:9])
-    return "\n".join(resultlist)
+    return "\n".join(resultlist).replace(',', '')
 
 def selectFIClassfromdatabase(x):
     #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
