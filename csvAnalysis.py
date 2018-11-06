@@ -1,6 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Nov  6 11:02:11 2018
 
-import sys
-import MeCab
+@author: shuichi
+"""
+
 import datetime
 import time
 import pandas as pd
@@ -8,13 +13,37 @@ import pandas as pd
 def f_str(x):
     #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
     return pd.to_datetime(str(x).split("\n")[0], format='%Y/%m/%d')
+def selectFIClass(x):
+    #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
+    tmp=str(x).replace(' ', '').split("\n")
+    resultlist=[]
+    for x in tmp:
+        resultlist.append(x[0:4])
+    return "\n".join(resultlist)
+def selectFISubclass(x):
+    #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
+    tmp=str(x).replace(' ', '').split("\n")
+    resultlist=[]
+    for x in tmp:
+        resultlist.append(x[0:9])
+    return "\n".join(resultlist)
+
+def selectFIClassfromdatabase(x):
+    #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
+    tmp=str(x).split("\n")
+    resultlist=[]
+    for x in tmp:
+        resultlist.append(str(dfs[dfs.index==x]["タイトル"].values))
+        
+    return "\n".join(resultlist)
+
 
 if __name__ == '__main__':
     progress_s_time = datetime.datetime.today()
     print('実行開始時間(Start time)：' + str( progress_s_time.strftime("%Y/%m/%d %H:%M:%S") ))
     progress_s_time = time.time()
     
-
+    # dataframe clean up
     df = pd.read_csv('Jplatpatlist.csv',header=0)
     #print(df)
     # add 出願日 col
@@ -29,7 +58,19 @@ if __name__ == '__main__':
     #df_m.index.names = ["year","month"]
     #df_m.sum(level='month')
     
-    #
+    
+    
+    ############## select FI
+    dfs = pd.read_csv("./FI/FIlist.csv",header=0,index_col=0)
+    #tmp=df["FI"][10].replace(' ', '').split("\n")
+    df["FI_class"]=df["FI"].map(selectFIClass)
+    df["FI_subclass"]=df["FI"].map(selectFISubclass)
+    df["FI_classJP"]=df["FI_class"].map(selectFIClassfromdatabase)
+    df["FI_subclassJP"]=df["FI_subclass"].map(selectFIClassfromdatabase)
+    
+    df.to_csv("Jplatpatlist_tranlated.csv")
+    
+    ############## 
     print(df["出願人"].value_counts())
     
     grouped = df.groupby(["year",'month'])

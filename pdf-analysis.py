@@ -19,6 +19,7 @@ import re
 import os
 import datetime
 import time
+import pandas as pd
 
 
 
@@ -80,6 +81,7 @@ if __name__ == '__main__':
     filenames=os.listdir('./pdf/')
     #check the output folder
     not_exist_mkdir(outputpath)
+    pd.DataFrame(filenames).to_csv("pdfnames.csv")
     for item,filename in zip(file_list,filenames):
         #check the output folder
         pdfoutputpath=outputpath+filename.rstrip(".pdf")
