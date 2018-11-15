@@ -29,6 +29,7 @@ def selectFISubclass(x):
     resultlist=[]
     for x in tmp:
         resultlist.append(x[0:9])
+    resultlist=list(set(resultlist))
     return "\n".join(resultlist).replace(',', '')
 
 def selectFIClassfromdatabase(x):
@@ -75,13 +76,15 @@ if __name__ == '__main__':
     
     ############## 
     print(df["出願人"].value_counts())
+    print(df["FI_subclassJP"].value_counts())
     
+    selecteddf=df[df["FI_subclassJP"].str.contains('センサ')]
     #grouped = df[df["出願人"]=="ソニー株式会社"].groupby(["year",'month'])
     grouped = df.groupby(["year",'month'])
     
-    plt.figure(figsize = (15,7))
+    plt.figure(figsize = (25,7))
     grouped["count"].sum().plot(kind="bar",color='k')
-    plt.savefig("出願件数の推移-hist.png")
+    #plt.savefig("出願件数の推移-hist.png", dpi=1200)
     plt.show()
     plt.close('all')
     grouped["count"].sum().to_csv("出願件数の推移.csv")
