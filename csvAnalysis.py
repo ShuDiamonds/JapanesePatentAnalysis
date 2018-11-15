@@ -9,6 +9,8 @@ Created on Tue Nov  6 11:02:11 2018
 import datetime
 import time
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
 def f_str(x):
     #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
@@ -45,7 +47,7 @@ if __name__ == '__main__':
     progress_s_time = time.time()
     
     # dataframe clean up
-    df = pd.read_csv('Jplatpatlist.csv',header=0)
+    df = pd.read_csv('Jplatpatlist_機械学習.csv',header=0)
     #print(df)
     # add 出願日 col
     df["出願日"]=0
@@ -60,8 +62,8 @@ if __name__ == '__main__':
     #df_m.sum(level='month')
     
     
-    
     ############## select FI
+    
     dfs = pd.read_csv("./FI/FIlist.csv",header=0,index_col=0)
     #tmp=df["FI"][10].replace(' ', '').split("\n")
     df["FI_class"]=df["FI"].map(selectFIClass)
@@ -74,18 +76,16 @@ if __name__ == '__main__':
     ############## 
     print(df["出願人"].value_counts())
     
+    #grouped = df[df["出願人"]=="ソニー株式会社"].groupby(["year",'month'])
     grouped = df.groupby(["year",'month'])
-    grouped["count"].sum().plot(kind="bar")
+    
+    plt.figure(figsize = (15,7))
+    grouped["count"].sum().plot(kind="bar",color='k')
+    plt.savefig("出願件数の推移-hist.png")
+    plt.show()
+    plt.close('all')
     grouped["count"].sum().to_csv("出願件数の推移.csv")
     
     progress_e_time = time.time()
     progress_i_time = progress_e_time - progress_s_time
     print( '実行時間(duration)：' + str(round(progress_i_time,1)) + "秒" )#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Nov  5 17:21:21 2018
-
-@author: shuichi
-"""
-
-
