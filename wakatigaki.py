@@ -19,7 +19,7 @@ if __name__ == '__main__':
     #setup mecab
     m = MeCab.Tagger ("-Owakati -u ./userdic/patentdic.dic")
     result_list=[]
-    with open("all【発明が解決しようとする課題】.txt", mode='r') as f:
+    with open("./txt/all【発明が解決しようとする課題】.txt", mode='r') as f:
         lines = f.readlines() # 1行を文字列として読み込む(改行文字も含まれる)
         temp="".join(lines)
         lines=temp.split(",\n\n\n")
@@ -31,7 +31,7 @@ if __name__ == '__main__':
     
     #saving
     allText = ',\n'.join(result_list)
-    with open("wakatigaki_allpdf.txt", mode='w') as f:
+    with open("./txt/wakatigaki_allpdf.txt", mode='w') as f:
         f.write(allText)
     
     progress_e_time = time.time()

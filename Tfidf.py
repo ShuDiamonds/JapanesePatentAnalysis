@@ -21,7 +21,7 @@ if __name__ == '__main__':
     print('実行開始時間(Start time)：' + str( progress_s_time.strftime("%Y/%m/%d %H:%M:%S") ))
     progress_s_time = time.time()
     
-    with open("wakatigaki_allpdf.txt", mode='r') as f:
+    with open("./txt/wakatigaki_allpdf.txt", mode='r') as f:
         lines = f.readlines()    
     #add
     temp="".join(lines)

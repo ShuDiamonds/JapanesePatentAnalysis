@@ -71,6 +71,8 @@ if __name__ == '__main__':
     print('実行開始時間(Start time)：' + str( progress_s_time.strftime("%Y/%m/%d %H:%M:%S") ))
     progress_s_time = time.time()
     
+    not_exist_mkdir("./txt")
+    
     result_list = []
     PreviousLiteratures=[]
     TechField_list=[]
@@ -197,31 +199,31 @@ if __name__ == '__main__':
     # write all 【技術分野】 text data
     allText = ',\n\n\n'.join(TechField_list)
     allText=allText.strip()
-    with open("all【技術分野】.txt", mode='w') as f:
+    with open("./txt/all【技術分野】.txt", mode='w') as f:
             f.write(allText)
     
     # write all 【背景技術】 text data
     allText = ',\n\n\n'.join(BackgroundTech_list)
     allText=allText.strip()
-    with open("all【背景技術】.txt", mode='w') as f:
+    with open("./txt/all【背景技術】.txt", mode='w') as f:
             f.write(allText)
     
     # write all 【発明が解決しようとする課題】 text data
     allText = ',\n\n\n'.join(ProblemSolve_list)
     allText=allText.strip()
-    with open("all【発明が解決しようとする課題】.txt", mode='w') as f:
+    with open("./txt/all【発明が解決しようとする課題】.txt", mode='w') as f:
             f.write(allText)
     
     # write all 【先行技術文献】 text data
     allText = ',\n\n\n'.join(PreviousLiteratures)
     allText=allText.strip()
-    with open("all【先行技術文献】.txt", mode='w') as f:
+    with open("./txt/all【先行技術文献】.txt", mode='w') as f:
             f.write(allText)
             
     # write all pdf text data
     allText = ',\n\n\n'.join(result_list)
     allText=allText.strip()
-    with open("allpdf.txt", mode='w') as f:
+    with open("./txt/allpdf.txt", mode='w') as f:
             f.write(allText)
     progress_e_time = time.time()
     progress_i_time = progress_e_time - progress_s_time
