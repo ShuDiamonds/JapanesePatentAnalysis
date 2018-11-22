@@ -83,7 +83,7 @@ if __name__ == '__main__':
     filenames=os.listdir('./pdf/')
     #check the output folder
     not_exist_mkdir(outputpath)
-    pd.DataFrame(filenames).to_csv("pdfnames.csv")
+    pd.DataFrame(filenames).to_csv("./outputcsv/pdfnames.csv")
     for item,filename in zip(file_list,filenames):
         #check the output folder
         pdfoutputpath=outputpath+filename.rstrip(".pdf")
@@ -142,7 +142,8 @@ if __name__ == '__main__':
                 break
         with open(pdfoutputpath+"/【技術分野】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
-        TechField_list.append("\n".join([filename]+tagetresult))
+        #TechField_list.append("\n".join([filename]+tagetresult))
+        TechField_list.append("\n".join(tagetresult))
         
         ################## Extract 【背景技術】
         tempindex=Findwords2index(splitted,"【背景技術】")
@@ -157,7 +158,8 @@ if __name__ == '__main__':
                 break
         with open(pdfoutputpath+"/【背景技術】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
-        BackgroundTech_list.append("\n".join([filename]+tagetresult))
+        #BackgroundTech_list.append("\n".join([filename]+tagetresult))
+        BackgroundTech_list.append("\n".join(tagetresult))
         
         
         ################## Extract 【発明が解決しようとする課題】
@@ -173,8 +175,8 @@ if __name__ == '__main__':
                 break
         with open(pdfoutputpath+"/【発明が解決しようとする課題】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
-        ProblemSolve_list.append("\n".join([filename]+tagetresult))
-        
+        #ProblemSolve_list.append("\n".join([filename]+tagetresult))
+        ProblemSolve_list.append("\n".join(tagetresult))
         
         
         

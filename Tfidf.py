@@ -7,6 +7,7 @@ Created on Sun Oct 28 12:50:29 2018
 """
 
 import numpy as np
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import sys
 import MeCab
@@ -15,6 +16,22 @@ import time
 
 from sklearn.cluster import KMeans
 from gensim.models import word2vec
+
+import plotly.graph_objs as go
+import plotly.offline as offline
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+from sklearn import decomposition
+from sklearn import datasets
+import re
+
+def Translate2JplatFormat(x):
+    return str(x)[-14:-10]+"-"+str(x)[-10:-4]
+
+def selectJplatpatlist_tranlated(x):
+    return Jplatpatlist_tranlated[Jplatpatlist_tranlated["文献番号"].str.contains(x)]["発明の名称"].values
 
 if __name__ == '__main__':
     progress_s_time = datetime.datetime.today()
@@ -58,12 +75,43 @@ if __name__ == '__main__':
     
     # クラスタリング
     clusters_resultlist=[]
-    clusters = KMeans(n_clusters=5, random_state=0).fit_predict(vecs)
+    clusters = KMeans(n_clusters=10, random_state=0).fit_predict(vecs)
     for doc, cls in zip(docs, clusters):
         #print(cls, doc)
         clusters_resultlist.append((cls, doc))
      
     clusters_resultlist=sorted(clusters_resultlist, key=lambda x:x[0])
+    
+    ############# read csv analysis
+    Jplatpatlist_tranlated = pd.read_csv('./outputcsv/Jplatpatlist_tranlated.csv',header=0,index_col=0)
+    pdfnames = pd.read_csv('./outputcsv/pdfnames.csv',header=0,index_col=0,names=['name'])
+    pdfnames["key2Jplatpatcsv"]=pdfnames["name"].map(Translate2JplatFormat)
+    pdfnames["発明の名称"]=pdfnames["key2Jplatpatcsv"].map(selectJplatpatlist_tranlated)
+    #############
+    offline.init_notebook_mode()
+    pca = decomposition.PCA(n_components=3)
+    pca.fit(vecs.toarray())
+    X = pca.transform(vecs.toarray())
+    trace = go.Scatter3d(x=X[:, 0], y=X[:, 1], z=X[:, 2], 
+                         mode='markers+text',
+                         marker=dict(color=clusters,
+                                     colorscale="Viridis",
+                                     line=dict(color='black', width=1)),
+                         text=list(pdfnames["発明の名称"].values)
+                         )
+    
+    layout = go.Layout(scene=
+                       dict(
+                            xaxis=dict(ticks='', showticklabels=False),
+                            yaxis=dict(ticks='', showticklabels=False),
+                            zaxis=dict(ticks='', showticklabels=False),
+                           )
+                      )
+    
+    fig = go.Figure(data=[trace], layout=layout)
+    offline.plot(fig, filename='./pca.html', image_filename='test', image='jpeg')
+    
+    #############
     
     
     progress_e_time = time.time()

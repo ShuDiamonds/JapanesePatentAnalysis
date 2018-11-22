@@ -45,4 +45,3 @@ fig = dict(data=[trace0, trace1, trace2], layout=layout)
 #offline.iplot(fig)
 
 offline.plot(fig, filename='test.html', image_filename='test', image='jpeg')
-"""

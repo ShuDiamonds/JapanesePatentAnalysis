@@ -19,7 +19,7 @@ if __name__ == '__main__':
     #setup mecab
     m = MeCab.Tagger ("-Owakati -u ./userdic/patentdic.dic")
     result_list=[]
-    with open("./txt/all【発明が解決しようとする課題】.txt", mode='r') as f:
+    with open("./txt/all【技術分野】.txt", mode='r') as f:
         lines = f.readlines() # 1行を文字列として読み込む(改行文字も含まれる)
         temp="".join(lines)
         lines=temp.split(",\n\n\n")
