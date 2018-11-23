@@ -78,6 +78,7 @@ if __name__ == '__main__':
     TechField_list=[]
     BackgroundTech_list=[]
     ProblemSolve_list=[]
+    TechEffect_list=[]
     
     file_list = glob('./pdf/*.pdf')
     filenames=os.listdir('./pdf/')
@@ -93,6 +94,8 @@ if __name__ == '__main__':
         
         
         ############## Cleaning the document
+        if result_txt.count(" ")>10000: #a few times, pdf data contains a lot of space
+            result_txt=result_txt.replace(' ', '')
         #devide to sentence
         splitted=result_txt.split("\n")
         #strip the items
@@ -120,7 +123,7 @@ if __name__ == '__main__':
             f.write("\n".join(splitted))
         
         
-        result_list.append(",".join(splitted))  
+        result_list.append(",,,".join(splitted))  
         
         
         #find the purpose section
@@ -131,15 +134,17 @@ if __name__ == '__main__':
         
         ################## Extract 【技術分野】
         tempindex=Findwords2index(splitted,"【技術分野】")
+        
         temp=splitted[tempindex:] #skip 2rows
         Findedflag=0 #When it is found, this flag turns 1
         tagetresult=[]
-        for sentence in temp:
-            if None != re.match("【\d+】",sentence): #check
-                Findedflag=1
-                tagetresult.append(sentence)
-            elif Findedflag==1 and None == re.match("【\d+】",sentence):
-                break
+        if tempindex!=0:
+            for sentence in temp:
+                if None != re.match("【\d+】",sentence): #check
+                    Findedflag=1
+                    tagetresult.append(sentence)
+                elif Findedflag==1 and None == re.match("【\d+】",sentence):
+                    break
         with open(pdfoutputpath+"/【技術分野】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
         #TechField_list.append("\n".join([filename]+tagetresult))
@@ -147,15 +152,17 @@ if __name__ == '__main__':
         
         ################## Extract 【背景技術】
         tempindex=Findwords2index(splitted,"【背景技術】")
+        
         temp=splitted[tempindex:] #skip 2rows
         Findedflag=0 #When it is found, this flag turns 1
         tagetresult=[]
-        for sentence in temp:
-            if None != re.match("【\d+】",sentence): #check
-                Findedflag=1
-                tagetresult.append(sentence)
-            elif Findedflag==1 and None == re.match("【\d+】",sentence):
-                break
+        if tempindex!=0:
+            for sentence in temp:
+                if None != re.match("【\d+】",sentence): #check
+                    Findedflag=1
+                    tagetresult.append(sentence)
+                elif Findedflag==1 and None == re.match("【\d+】",sentence):
+                    break
         with open(pdfoutputpath+"/【背景技術】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
         #BackgroundTech_list.append("\n".join([filename]+tagetresult))
@@ -167,17 +174,36 @@ if __name__ == '__main__':
         temp=splitted[tempindex:] #skip 2rows
         Findedflag=0 #When it is found, this flag turns 1
         tagetresult=[]
-        for sentence in temp:
-            if None != re.match("【\d+】",sentence): #check
-                Findedflag=1
-                tagetresult.append(sentence)
-            elif Findedflag==1 and None == re.match("【\d+】",sentence):
-                break
+        if tempindex!=0:
+            for sentence in temp:
+                if None != re.match("【\d+】",sentence): #check
+                    Findedflag=1
+                    tagetresult.append(sentence)
+                elif Findedflag==1 and None == re.match("【\d+】",sentence):
+                    break
+        else:
+            tagetresult=[]
         with open(pdfoutputpath+"/【発明が解決しようとする課題】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
         #ProblemSolve_list.append("\n".join([filename]+tagetresult))
         ProblemSolve_list.append("\n".join(tagetresult))
         
+        ################## Extract 【発明の効果】
+        tempindex=Findwords2index(splitted,"【発明の効果】")
+        temp=splitted[tempindex:] #skip 2rows
+        Findedflag=0 #When it is found, this flag turns 1
+        tagetresult=[]
+        if tempindex!=0:
+            for sentence in temp:
+                if None != re.match("【\d+】",sentence): #check
+                    Findedflag=1
+                    tagetresult.append(sentence)
+                elif Findedflag==1 and None == re.match("【\d+】",sentence):
+                    break
+        with open(pdfoutputpath+"/【発明の効果】.txt", mode='w') as f:
+            f.write("\n".join(tagetresult))
+        #ProblemSolve_list.append("\n".join([filename]+tagetresult))
+        TechEffect_list.append("\n".join(tagetresult))
         
         
         ################## Extract 【先行技術文献】の特許
@@ -185,12 +211,13 @@ if __name__ == '__main__':
         temp=splitted[tempindex+2:] #skip 2rows
         Findedflag=0 #When it is found, this flag turns 1
         tagetresult=[]
-        for sentence in temp:
-            if None != re.match("【特許文献\d+】",sentence): #check
-                Findedflag=1
-                tagetresult.append(sentence)
-            elif Findedflag==1 and None == re.match("【特許文献\d+】",sentence):
-                break
+        if tempindex!=0:
+            for sentence in temp:
+                if None != re.match("【特許文献\d+】",sentence): #check
+                    Findedflag=1
+                    tagetresult.append(sentence)
+                elif Findedflag==1 and None == re.match("【特許文献\d+】",sentence):
+                    break
         with open(pdfoutputpath+"/【先行技術文献】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
         PreviousLiteratures.append("\n".join([filename]+tagetresult))
@@ -227,6 +254,10 @@ if __name__ == '__main__':
     allText=allText.strip()
     with open("./txt/allpdf.txt", mode='w') as f:
             f.write(allText)
+            
+    
+    aaa=result_list[38].split(",,,")
+    
     progress_e_time = time.time()
     progress_i_time = progress_e_time - progress_s_time
     print( '実行時間(Duration)：' + str(round(progress_i_time,1)) + "秒" )

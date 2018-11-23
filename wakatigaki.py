@@ -10,6 +10,20 @@ import sys
 import MeCab
 import datetime
 import time
+import re
+
+
+def extractNoun(text):
+    # パース
+    mecab = MeCab.Tagger("-u ./userdic/patentdic.dic")
+    parse = mecab.parse(text)
+    lines = parse.split('\n')
+    items = (re.split('[\t,]', line) for line in lines)
+    # 名詞をリストに格納
+    return [item[0] for item in items
+            if (item[0] not in ('EOS', '', 't', 'ー') and
+                 item[1] == '名詞' and item[2] == '一般')]
+             
 
 if __name__ == '__main__':
     progress_s_time = datetime.datetime.today()
@@ -19,6 +33,7 @@ if __name__ == '__main__':
     #setup mecab
     m = MeCab.Tagger ("-Owakati -u ./userdic/patentdic.dic")
     result_list=[]
+    resultNoun_list=[]
     with open("./txt/all【技術分野】.txt", mode='r') as f:
         lines = f.readlines() # 1行を文字列として読み込む(改行文字も含まれる)
         temp="".join(lines)
@@ -26,12 +41,17 @@ if __name__ == '__main__':
         
         for line in lines:
             convertedtext=m.parse (line)
+            resultNoun_list.append(" ".join(extractNoun(line)))
             result_list.append(convertedtext)
         #end while
     
     #saving
     allText = ',\n'.join(result_list)
     with open("./txt/wakatigaki_allpdf.txt", mode='w') as f:
+        f.write(allText)
+    # save noun ver
+    allText = ',\n'.join(resultNoun_list)
+    with open("./txt/wakatigakiNoun_allpdf.txt", mode='w') as f:
         f.write(allText)
     
     progress_e_time = time.time()
