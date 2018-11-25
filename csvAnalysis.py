@@ -130,7 +130,7 @@ if __name__ == '__main__':
     plt.savefig("./submissions2/出願件数推移：主要出願企業-hist.png", dpi=400)
     plt.show()
     plt.close('all')
-    grouped["count"].sum().to_csv("./outputcsv/出願件数推移：主要出願企業.csv")
+    CompanyHistgrams.to_csv("./outputcsv/出願件数推移：主要出願企業.csv")
     ########### 技術区分構造：主要出願企業
     TechStructuresByCompany=pd.DataFrame()
     for TechElement in TechElements.index:
