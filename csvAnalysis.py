@@ -110,7 +110,8 @@ if __name__ == '__main__':
     # matplotlibのデフォルトフォントをTakaoGothicに設定
     font = {'family' : 'TakaoGothic'}
     matplotlib.rc('font', **font)
-    plt.figure(figsize = (15,7))
+    plt.figure(figsize = (10,7))
+    plt.tick_params(labelsize=18)
     Company.plot(kind="barh")    
     #plt.savefig("./submissions2/主要出願企業-hist.png", dpi=400)
     plt.show()
@@ -122,7 +123,9 @@ if __name__ == '__main__':
         grouped = df[df["出願人"]==Compa].groupby(["year"])
         CompanyHistgrams[Compa]=grouped["count"].sum()
     
+    CompanyHistgrams=CompanyHistgrams.fillna(0)
     plt.figure(figsize = (25,7))
+    plt.tick_params(labelsize=18)
     CompanyHistgrams.plot(kind="bar")
     plt.savefig("./submissions2/出願件数推移：主要出願企業-hist.png", dpi=400)
     plt.show()
@@ -145,8 +148,9 @@ if __name__ == '__main__':
     
     TechStructuresByCompany=TechStructuresByCompany.T
     plt.figure(figsize = (25,7))
+    plt.tick_params(labelsize=18)
     TechStructuresByCompany.plot(kind="bar",stacked=True)
-    plt.savefig("./submissions2/出願件数推移：主要出願企業-hist.png", dpi=400)
+    plt.savefig("./submissions2/技術区分構造：主要出願企業-hist.png", dpi=400)
     plt.show()
     plt.close('all')
     TechStructuresByCompany.to_csv("./outputcsv/技術区分構造：主要出願企業.csv")
@@ -157,6 +161,7 @@ if __name__ == '__main__':
     grouped = df.groupby(["year"])
     
     plt.figure(figsize = (25,7))
+    plt.tick_params(labelsize=18)
     grouped["count"].sum().plot(kind="bar",color='k')
     plt.savefig("./submissions2/出願件数の推移-hist.png", dpi=400)
     plt.show()

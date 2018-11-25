@@ -129,7 +129,7 @@ if __name__ == '__main__':
         font = dict(size = 15)) 
     
     fig = dict(data = [trace], layout = layout)
-    offline.plot(fig, filename='./pca.html', image_filename='test', image='jpeg')
+    offline.plot(fig, filename='./bubblechart.html', image_filename='test', image='jpeg')
     
     
     
