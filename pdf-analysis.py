@@ -61,6 +61,14 @@ def Findwords2index(listdata,pattern):
         return 0
     else:   
         return  temp[0]
+    
+def PLselect(x):
+    #return str(x).replace('1', 'One').replace('2', 'Two').replace('3', 'Three').replace('4', 'Four')
+    tmp=str(x).replace(' ', '').split("\n")
+    resultlist=[x[7:] for x in tmp]
+    return "\n".join(resultlist)
+
+    
 def not_exist_mkdir( output_path ):
     if( not os.path.exists(output_path) ):
         os.mkdir( output_path )
@@ -220,9 +228,26 @@ if __name__ == '__main__':
                     break
         with open(pdfoutputpath+"/【先行技術文献】.txt", mode='w') as f:
             f.write("\n".join(tagetresult))
-        PreviousLiteratures.append("\n".join([filename]+tagetresult))
+        #PreviousLiteratures.append("\n".join([filename]+tagetresult))
+        PreviousLiteratures.append("\n".join(tagetresult))
+        PreviousLiteraturesdf=pd.DataFrame(PreviousLiteratures)
+        PreviousLiteraturesdf["pdf"]=pd.Series(filenames)
+        PreviousLiteraturesdf["特許文献"]= PreviousLiteraturesdf[0].map(PLselect)
+        ########
+        tmp=PreviousLiteraturesdf["特許文献"].value_counts()
+        PLvallist=[]
+        PLindexlist=[]
+        for key,value in tmp.iteritems():
+            names=str(key).split("\n")
+            for name in names:
+                PLvallist.append(value)
+                PLindexlist.append(name)
+        PLlist=pd.DataFrame(PLvallist,index=PLindexlist)
+        PLlist=PLlist.groupby(PLlist.index).sum()
+        PLlist=PLlist.sort_values(by=0,ascending=False)#.drop("他")
         
-        
+        PreviousLiteraturesdf[PreviousLiteraturesdf["特許文献"].str.contains("特開２００７−０６１６３８号公報")]
+        ########
         
         
     # write all 【技術分野】 text data
