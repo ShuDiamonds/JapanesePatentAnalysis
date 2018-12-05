@@ -49,8 +49,11 @@ if __name__ == '__main__':
     print('実行開始時間(Start time)：' + str( progress_s_time.strftime("%Y/%m/%d %H:%M:%S") ))
     progress_s_time = time.time()
     sns.set()
-    
-    
+    FIjap=["診断機器","イメージデータ処理","商用特化型データ処理システム",
+           "材料の調査","ヘルスケアインフォマティクス","電気的デジタルデータ処理",
+           "特定の計算モデルに基づくコンピュータ・システム",
+           "光学要素，光学系，または光学装置","酵素 微生物を含む測定 試験方法",
+           "エレクトログラフィー"]
     df = pd.read_csv('Jplatpatlist_機械学習_画像_診断.csv',header=0)
     #df = pd.read_csv('Jplatpatlist.csv',header=0)
     # add 出願日 col
@@ -111,11 +114,11 @@ if __name__ == '__main__':
     
     layout = go.Layout(
             autosize=False,
-            width=500,
-            height=500,
+            width=1500,
+            height=1000,
             margin=go.layout.Margin(
-            l=50,
-            r=50,
+            l=350,
+            r=350,
             b=100,
             t=100,
             pad=4
@@ -124,7 +127,8 @@ if __name__ == '__main__':
             ticktext = TechElementAndObjectmatrix.columns.values,
             tickvals = np.arange(TechElementAndObjectmatrix.shape[1])  ),
         yaxis = dict(
-            ticktext = TechElementAndObjectmatrix.index.values,
+            #ticktext = TechElementAndObjectmatrix.index.values, # FI code version
+            ticktext = FIjap,
             tickvals = np.arange(TechElementAndObjectmatrix.shape[0])  ),
         font = dict(size = 15)) 
     
